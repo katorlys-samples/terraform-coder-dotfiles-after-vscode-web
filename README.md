@@ -77,11 +77,11 @@ All attempts failed, so I had no choice but to publish a module from Git to avoi
 </div>
 
 [back-to-top-button]: https://img.shields.io/badge/BACK_TO_TOP-151515?style=flat-square
-[github-pr-badge]: https://img.shields.io/github/issues-pr/katorlys-samples/terraform-coder-dotfileswithchecks?label=pulls&labelColor=151515&color=79E096&style=flat-square
-[github-pr-link]: https://github.com/katorlys-samples/terraform-coder-dotfileswithchecks/pulls
-[github-issue-badge]: https://img.shields.io/github/issues/katorlys-samples/terraform-coder-dotfileswithchecks?labelColor=151515&color=FFC868&style=flat-square
-[github-issue-link]: https://github.com/katorlys-samples/terraform-coder-dotfileswithchecks/issues
-[github-license-badge]: https://img.shields.io/github/license/katorlys-samples/terraform-coder-dotfileswithchecks?labelColor=151515&color=EFEFEF&style=flat-square
+[github-pr-badge]: https://img.shields.io/github/issues-pr/katorlys-samples/terraform-coder-dotfiles-after-vscode-web?label=pulls&labelColor=151515&color=79E096&style=flat-square
+[github-pr-link]: https://github.com/katorlys-samples/terraform-coder-dotfiles-after-vscode-web/pulls
+[github-issue-badge]: https://img.shields.io/github/issues/katorlys-samples/terraform-coder-dotfiles-after-vscode-web?labelColor=151515&color=FFC868&style=flat-square
+[github-issue-link]: https://github.com/katorlys-samples/terraform-coder-dotfiles-after-vscode-web/issues
+[github-license-badge]: https://img.shields.io/github/license/katorlys-samples/terraform-coder-dotfiles-after-vscode-web?labelColor=151515&color=EFEFEF&style=flat-square
 <!-- https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-EFEFEF?labelColor=151515&style=flat-square -->
-[github-license-badge-bottom]: https://img.shields.io/github/license/katorlys-samples/terraform-coder-dotfileswithchecks?labelColor=151515&color=EFEFEF&style=for-the-badge
+[github-license-badge-bottom]: https://img.shields.io/github/license/katorlys-samples/terraform-coder-dotfiles-after-vscode-web?labelColor=151515&color=EFEFEF&style=for-the-badge
 <!-- https://img.shields.io/badge/license-CC_BY--NC--SA_4.0-EFEFEF?labelColor=151515&style=for-the-badge -->
