@@ -39,13 +39,13 @@ variable "port" {
   default     = 13338
 }
 
-variable "vscode_display_name" {
+variable "display_name" {
   type        = string
   description = "The display name for the VS Code Web application."
   default     = "VS Code Web"
 }
 
-variable "vscode_slug" {
+variable "slug" {
   type        = string
   description = "The slug for the VS Code Web application."
   default     = "vscode-web"
@@ -76,6 +76,12 @@ variable "install_prefix" {
   type        = string
   description = "The prefix to install vscode-web to."
   default     = "/tmp/vscode-web"
+}
+
+variable "commit_id" {
+  type        = string
+  description = "Specify the commit ID of the VS Code Web binary to pin to a specific version. If left empty, the latest stable version is used."
+  default     = ""
 }
 
 variable "extensions" {
@@ -110,8 +116,14 @@ variable "order" {
   default     = null
 }
 
+variable "group" {
+  type        = string
+  description = "The name of a group that this app belongs to."
+  default     = null
+}
+
 variable "settings" {
-  type        = map(string)
+  type        = any
   description = "A map of settings to apply to VS Code web."
   default     = {}
 }
@@ -128,6 +140,12 @@ variable "use_cached" {
   default     = false
 }
 
+variable "disable_trust" {
+  type        = bool
+  description = "Disables workspace trust protection for VS Code Web."
+  default     = false
+}
+
 variable "extensions_dir" {
   type        = string
   description = "Override the directory to store extensions in."
@@ -138,4 +156,35 @@ variable "auto_install_extensions" {
   type        = bool
   description = "Automatically install recommended extensions when VS Code Web starts."
   default     = false
+}
+
+variable "subdomain" {
+  type        = bool
+  description = <<-EOT
+    Determines whether the app will be accessed via it's own subdomain or whether it will be accessed via a path on Coder.
+    If wildcards have not been setup by the administrator then apps with "subdomain" set to true will not be accessible.
+  EOT
+  default     = true
+}
+
+variable "platform" {
+  type        = string
+  description = "The platform to use for the VS Code Web."
+  default     = ""
+  validation {
+    condition     = var.platform == "" || var.platform == "linux" || var.platform == "darwin" || var.platform == "alpine" || var.platform == "win32"
+    error_message = "Incorrect value. Please set either 'linux', 'darwin', or 'alpine' or 'win32'."
+  }
+}
+
+variable "workspace" {
+  type        = string
+  description = "Path to a .code-workspace file to open in vscode-web."
+  default     = ""
+}
+
+variable "dotfiles_description" {
+  type        = string
+  description = "A custom description for the dotfiles parameter. This is shown in the UI - and allows you to customize the instructions you give to your users."
+  default     = "Enter a URL for a [dotfiles repository](https://dotfiles.github.io) to personalize your workspace"
 }

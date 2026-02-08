@@ -4,10 +4,13 @@ terraform {
   required_providers {
     coder = {
       source  = "coder/coder"
-      version = ">= 0.17"
+      version = ">= 2.5"
     }
   }
 }
+
+data "coder_workspace_owner" "me" {}
+data "coder_workspace" "me" {}
 
 resource "coder_script" "dotfiles-after-vscode-web" {
   agent_id     = var.agent_id
@@ -22,9 +25,14 @@ resource "coder_script" "dotfiles-after-vscode-web" {
     SETTINGS : replace(jsonencode(var.settings), "\"", "\\\""),
     OFFLINE : var.offline,
     USE_CACHED : var.use_cached,
+    DISABLE_TRUST : var.disable_trust,
     EXTENSIONS_DIR : var.extensions_dir,
     FOLDER : var.folder,
+    WORKSPACE : var.workspace,
     AUTO_INSTALL_EXTENSIONS : var.auto_install_extensions,
+    SERVER_BASE_PATH : local.server_base_path,
+    COMMIT_ID : var.commit_id,
+    PLATFORM : var.platform,
     DOTFILES_URI : local.dotfiles_uri,
     DOTFILES_USER : local.user
   })
@@ -40,21 +48,27 @@ resource "coder_script" "dotfiles-after-vscode-web" {
       condition     = !var.offline || !var.use_cached
       error_message = "Offline and Use Cached can not be used together"
     }
+
+    precondition {
+      condition     = (var.workspace == "" || var.folder == "")
+      error_message = "Set only one of `workspace` or `folder`."
+    }
   }
 }
 
 resource "coder_app" "vscode-web" {
   agent_id     = var.agent_id
-  slug         = var.vscode_slug
-  display_name = var.vscode_display_name
-  url          = var.folder == "" ? "http://localhost:${var.port}" : "http://localhost:${var.port}?folder=${var.folder}"
+  slug         = var.slug
+  display_name = var.display_name
+  url          = local.url
   icon         = "/icon/code.svg"
-  subdomain    = true
+  subdomain    = var.subdomain
   share        = var.share
   order        = var.order
+  group        = var.group
 
   healthcheck {
-    url       = "http://localhost:${var.port}/healthz"
+    url       = local.healthcheck_url
     interval  = 5
     threshold = 6
   }
@@ -67,14 +81,23 @@ data "coder_parameter" "dotfiles_uri" {
   display_name = "Dotfiles URL"
   order        = var.coder_parameter_order
   default      = var.default_dotfiles_uri
-  description  = "Enter a URL for a [dotfiles repository](https://dotfiles.github.io) to personalize your workspace"
+  description  = var.dotfiles_description
   mutable      = true
   icon         = "/icon/dotfiles.svg"
 }
 
 locals {
-  dotfiles_uri = var.dotfiles_uri != null ? var.dotfiles_uri : data.coder_parameter.dotfiles_uri[0].value
-  user         = var.user != null ? var.user : ""
+  dotfiles_uri     = var.dotfiles_uri != null ? var.dotfiles_uri : data.coder_parameter.dotfiles_uri[0].value
+  user             = var.user != null ? var.user : ""
+  server_base_path = var.subdomain ? "" : format("/@%s/%s/apps/%s/", data.coder_workspace_owner.me.name, data.coder_workspace.me.name, var.slug)
+  url = (
+    var.workspace != "" ?
+    "http://localhost:${var.port}${local.server_base_path}?workspace=${urlencode(var.workspace)}" :
+    var.folder != "" ?
+    "http://localhost:${var.port}${local.server_base_path}?folder=${urlencode(var.folder)}" :
+    "http://localhost:${var.port}${local.server_base_path}"
+  )
+  healthcheck_url = var.subdomain ? "http://localhost:${var.port}/healthz" : "http://localhost:${var.port}${local.server_base_path}/healthz"
 }
 
 # resource "coder_script" "dotfiles" {
@@ -95,6 +118,8 @@ resource "coder_app" "dotfiles" {
   display_name = "Refresh Dotfiles"
   slug         = "dotfiles"
   icon         = "/icon/dotfiles.svg"
+  order        = var.order
+  group        = var.group
   command = templatefile("${path.module}/dotfiles_run.sh", {
     DOTFILES_URI : local.dotfiles_uri,
     DOTFILES_USER : local.user

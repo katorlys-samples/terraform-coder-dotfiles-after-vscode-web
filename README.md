@@ -35,7 +35,7 @@ Combine [Coder VS Code Web Module](https://registry.coder.com/modules/vscode-web
 ```tf
 module "dotfiles-after-vscode-web" {
   source         = "katorlys-samples/dotfiles-after-vscode-web/coder"
-  version        = "0.1.0"
+  version        = "0.1.1"
   agent_id       = coder_agent.example.id
   folder         = "/home/coder"
   accept_license = true
